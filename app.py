@@ -12,7 +12,7 @@ def predict():
         return jsonify({"error": "Missing image_url"}), 400
 
     result = client.predict(
-        image=handle_file(data["image_url"]),
+        image=handle_file(data["image_url"]), 
         api_name="/predict"
     )
 
