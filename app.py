@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify
 from gradio_client import Client, handle_file
+import os
 
 app = Flask(__name__)
-client = Client("AlaaElsayed/yolospace")  # عدّلي إذا كان Space مختلف
+client = Client("AlaaElsayed/yolospace")  # عدّلي لو الSpace مختلف
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -10,12 +11,11 @@ def predict():
     if not data or "image_url" not in data:
         return jsonify({"error": "Missing image_url"}), 400
 
-    # نرسل للصورة للـ Space
     result = client.predict(
         image=handle_file(data["image_url"]),
         api_name="/predict"
     )
-    # نعيد جزئي الاستجابة
+
     return jsonify({
         "detected_image": result[0],
         "nutrition_info": result[1]
@@ -26,4 +26,5 @@ def home():
     return "✅ API is running"
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
